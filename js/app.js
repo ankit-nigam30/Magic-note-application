@@ -7,16 +7,21 @@ let addBtn = document.getElementById('addBtn');
 addBtn.addEventListener('click', function (e) {
     let addTxt = document.getElementById('addTxt');
     let titleTxt = document.getElementById('titleTxt');
-    let notesLocalstg = localStorage.getItem('notes');
-    if (notesLocalstg == null) {
-        notesObj = [];
+    if (validate(addTxt, titleTxt )){
+        let notesLocalstg = localStorage.getItem('notes');
+        if (notesLocalstg == null) {
+            notesObj = [];
+        } else {
+            notesObj = JSON.parse(notesLocalstg)
+        }
+        notesObj.push({ desc: addTxt.value, title: titleTxt.value, imp: false });
+        localStorage.setItem('notes', JSON.stringify(notesObj));
+        addTxt.value = '';
+        titleTxt.value = '';
+        showMsg('success', 'Your Note Added Successfully!!');
     } else {
-        notesObj = JSON.parse(notesLocalstg)
+        showMsg('danger', 'Please Add Titile and Description!!');
     }
-    notesObj.push({ desc: addTxt.value, title: titleTxt.value, imp: false });
-    localStorage.setItem('notes', JSON.stringify(notesObj));
-    addTxt.value = '';
-    titleTxt.value = '';
     showNotes();
 });
 
@@ -33,7 +38,7 @@ function showNotes() {
     let bgC = '';
     notesObj.forEach(function (element, index) {
         if (element.imp === true) {
-            bgC = 'background-color: red';
+            bgC = 'background-color: Tomato';
         } else {
             bgC = '';
         }
@@ -67,6 +72,7 @@ function deleteNotes(index) {
     }
     notesObj.splice(index, 1);
     localStorage.setItem('notes', JSON.stringify(notesObj));
+    showMsg('danger','Note Deleted Successfully !!')
     showNotes();
 }
 
@@ -99,11 +105,38 @@ function markImportant(id, index) {
         for (var key in notesObj[index]) {
             if (notesObj[index].imp == true) {
                 notesObj[index].imp = false;
+                showMsg('success', 'Note UnMarked As Important!!');
             } else {
                 notesObj[index].imp = true;
+                showMsg('success', 'Note Marked As Important!!');
             }
         }
     }
     localStorage.setItem('notes', JSON.stringify(notesObj));
+    
     showNotes();
+}
+
+//show msg on add, delete, marked as important.
+function showMsg(type, messgae) {
+    let showmsgElm = document.getElementById('msg');
+    let msg = `<div class="alert alert-${type} alert-dismissible fade show" role="alert">
+                    <p>${messgae}</p>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+            </div>`;
+    showmsgElm.innerHTML = msg;
+    setTimeout( function(){
+        showmsgElm.innerHTML = '';
+    }, 3000)
+}
+
+//validate form Add note form fields.
+function validate(addTxt, titleTxt){
+  if(addTxt.value == '' && titleTxt.value == ''){
+    return false;
+  } else {
+    return true;
+  }
 }
