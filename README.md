@@ -1,7 +1,7 @@
 # Magic-note-application
 Basic Notes Application built in Pure Javascript.
 
-Functinality:
+Functionality:
   ADD NOTES WITH TITLE AND DESCRIPTION.
   DELETE NOTES.
   SERCH NOTES.
